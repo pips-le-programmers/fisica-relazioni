@@ -2,12 +2,12 @@ import math as m
 f = lambda x, y: x/y
 
 def chi(x , coef , y , inc_y , inc_x , debug=True):
-    value = m.pow((x*coef)-y , 2) / m.pow(inc_y , 2)
+    value = m.pow(y-(x*coef) , 2) / (inc_y**2)
     if debug:
         print(value)
     return value
 
-def sum_chi(dati_x , dati_y , inc_y ,inc_x , coef , debug = True):
+def sum_chi(dati_x , dati_y , inc_y ,inc_x , coef , debug = False):
     return sum([chi(dati_x[h] , coef , dati_y[h] , inc_y[h], inc_x[h] ,debug=debug) for h in range(len(dati_x))])
 
 def media_pes(*args):
@@ -18,7 +18,7 @@ def media_pes(*args):
     return (medi_m , inc)
 
 def find(dati_x , dati_y , inc_y, inc_x):
-    step = 0.0000000001
+    step = 0.01
     coef = sum([f(dati_x[h] , dati_y[h]) for h in range(len(dati_x))]) / len(dati_x)
     m_chi = sum_chi(dati_x , dati_y , inc_y,inc_x , coef)
     while True:
@@ -47,7 +47,6 @@ def find_m(dati_x , dati_y , inc_y,inc_x , threshold , coef_min):
             break
         else:
             coef1+= step
-        m_chi = sum_chi(dati_x , dati_y , inc_y,inc_x , coef1)
     m_chi = sum_chi(dati_x , dati_y , inc_y,inc_x , coef2)
     while True:
         chi_2 = sum_chi(dati_x , dati_y , inc_y,inc_x , coef2-step)
@@ -56,5 +55,4 @@ def find_m(dati_x , dati_y , inc_y,inc_x , threshold , coef_min):
             break
         else:
             coef2-= step
-        m_chi = sum_chi(dati_x , dati_y , inc_y,inc_x , coef1)
     return ((coef2+coef1)/2 , abs(coef2-coef1)/2)
